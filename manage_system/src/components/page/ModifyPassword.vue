@@ -8,7 +8,7 @@
 				<form>
 					<div class="mp past_pw"><span class="space">旧密码：</span><input v-model="pwForm.oldPw" type="password" name="password" placeholder="请输入旧密码"></div>
 					<div class="mp new_pw"><span class="space">新密码：</span><input v-model="pwForm.newPw" type="password" name="password" placeholder="请输入新密码"></div>
-					<div class="mp confirm_pw"><span>确认密码：</span><input v-model="pwForm.confirmnewPw" type="password" name="password" placeholder="请再次确认新密码" @blur="confirmPw"></div>
+					<div class="mp confirm_pw"><span>确认密码：</span><input v-model="pwForm.confirmnewPw" type="password" name="password" placeholder="请再次确认新密码"></div>
 				</form>
 				<div class="save_btn" @click="save">保存</div>
 				<div class="cancel_btn" @click="cancel">取消</div>
@@ -30,17 +30,16 @@
     		}
     	},
     	methods:{
-    		confirmPw(){
-    			if(this.pwForm.confirmnewPw!=this.pwForm.newPw){
-    				alert("两次输入的密码不一致！");
-    			}
-    		},
     		save(){
     			for(var key in this.pwForm){
     				if(this.pwForm[key]==""){
-    					alert("表单不能为空");
+    					alert("请填写完整信息");
     					return;
     				}
+    			}
+    			if(this.pwForm.confirmnewPw!=this.pwForm.newPw){
+    				alert("两次输入的密码不一致！");
+    				return;
     			}
     			const that=this;
     			that.$axios.put("/accounts/changePassword",{
@@ -50,7 +49,8 @@
     			}).then(function(res){
     				console.log(res.data);
     				if(res.data.code==1){
-    					alert("旧密码错误！")
+    					alert("旧密码错误！");
+    					return;
     				}
     				if(res.data.code==0){
     					that.$router.push('/login');

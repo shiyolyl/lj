@@ -4,7 +4,9 @@
             <template v-for="item in items">
                 <template v-if="item.subs">
                     <el-submenu :index="item.index">
-                        <template slot="title" class="first_title" ><i :class="item.icon"></i>{{ item.title }}</template>
+                        <template slot="title">
+                          <div><i :class="item.icon"></i>{{ item.title }}</div>
+                        </template>
                         <el-menu-item v-for="(subItem,i) in item.subs" :key="i" :index="subItem.index">{{ subItem.title }}
                         </el-menu-item>
                     </el-submenu>
@@ -23,8 +25,7 @@
     export default {
         data() {
             return {
-                items: [
-//                   
+                items: [               
                     {
                         icon: 'el-icon-menu',
                         index: 'checkpending',
@@ -77,55 +78,42 @@
                         icon: 'el-icon-upload2',
                         index: 'systemsetting',
                         title: '系统设置',
-                       //  subs: [
-                       //     // {
-                       //     //     index: 'spread',
-                       //     //     title: '开屏'
-                       //     // },
-                       //     // {
-                       //     //     index: 'contactservice',
-                       //     //     title: '联系客服'
-                       //     // },
-                       //     // {
-                       //     //     index: 'vueeditor',
-                       //     //     title: '行业类别'
-                       //     // },
-                       //     // {
-                       //     //     index: 'vueeditor',
-                       //     //     title: '参数设置'
-                       //     // },
-                       // ]
                     },
                     
-                ]
+                ],
             }
         },
         computed:{
             onRoutes(){
                 return this.$route.path.replace('/','');
             }
-        }
+        },
+        methods:{
+          handleOpen(key, keyPath){
+            console.log(key);
+            console.log(keyPath);
+          },
+          handleClose(key, keyPath){
+
+          },
+        },
     }
 </script>
 
-<style scoped>
+<style>
     .sidebar{
         display: block;
         position: absolute;
-        width: 250px;
-        /*height:100%;*/
+        width: 13%;
         left: 0;
         top: 70px;
         bottom:0;
-        /*border:1px solid #ccc;*/
     }
     .el-menu--dark{
       background-color:#fff;
     }
     .sidebar > ul {
         height:100%;
-        /*color:rgb(51, 51, 51);*/
-        /*background-color:#fff;*/
         border:1px solid #ccc;
     }
     .sidebar > ul li{
@@ -135,23 +123,9 @@
         font-size: 14px;
         border-right:none;
     }
-
-    .first_title{
-        border:1px solid #ccc;
-    }
     .el-menu{
       background-color: #fff;
     }
-
-    /*.el-menu-item, .el-submenu__title.is-active{
-      background-color:red;
-    }*/
-    .el-submenu.is-active{
-      /*color:#fff;*/
-    }
-    /*.el-submenu.is-active .el-submenu__title{
-      background-color:red!important;
-    }*/
     .el-submenu .el-menu-item{
       background-color: #fff;
     }
@@ -159,15 +133,40 @@
     .el-menu--horizontal.el-menu--dark .el-submenu .el-menu-item.is-active, .el-menu-item.is-active{
       background-color: #eee;
       color:#48576a;
-      /*border:none;*/
     }
     /*二级菜单hover的时候*/
     .el-submenu .el-menu-item:hover, .el-submenu__title:hover{
       background-color: #eee;
     }
-    /*一级菜单选中的时候*/
-    /*.el-menu--horizontal.el-menu--dark .el-submenu.is-active .el-submenu__title{
-      background-color: red;
+    
+    .el-menu--horizontal.el-menu--dark .el-submenu .el-menu-item.is-active[data-v-cc923d3c]{
+      background-color:rgba(255, 0, 0, 1);
       color:#fff;
-    }*/
+    }
+    
+
+    /*一级菜单选中时*/
+    .el-submenu.is-active .el-submenu__title{
+      background-color:rgb(255, 0, 0);
+      color:#fff;
+      font-weight: bold;
+    }
+    /*一级菜单选中时边框*/
+    .el-submenu.is-active .sidebar > ul li[data-v-cc923d3c]{
+       border-color:rgb(255, 0, 0);
+    }
+    /*最后一个一级菜单系统设置选中时*/
+    .sidebar > ul>li:nth-child(4n).el-menu-item.is-active{
+      background-color:rgb(255, 0, 0);
+      color:#fff;
+      font-weight: bold;
+    }
+    /*一级菜单选中时字体*/
+    .el-submenu__title{
+      font-weight: bold;
+    }
+    .sidebar > ul>li:nth-child(4n).el-menu-item{
+      font-weight: bold;
+    }
 </style>
+  

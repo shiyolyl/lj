@@ -14,6 +14,16 @@
     export default {
         components:{
             vHead, vSidebar
-        }
+        },
     }
 </script>
+<style type="text/css">
+    .wrapper{
+        width:100%;
+    }
+    .content{
+        width:87%;
+        padding-left:2%;
+        left:13%;
+    }
+</style>

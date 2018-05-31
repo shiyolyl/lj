@@ -82,7 +82,7 @@
     <div class="handle-box">
         <div>
             <span>每页展示：</span>
-            <el-select v-model="pageInfo.per_page" placeholder="5" class="handle-select mr10" @change="selectChange">
+            <el-select v-model="pageInfo.per_page" placeholder="10" class="handle-select mr10" @change="selectChange">
                 <el-option v-for="(item,index) in pageInfo.page_sizes"  :key="index" :label="item" :value="item">{{item}}</el-option>
             </el-select>
             <span>条</span>
@@ -91,7 +91,7 @@
     <el-table :data="tableData3"  border style="width: 100%" max-height="800" :default-sort="{prop:'date', order:'descending'}">
     	<el-table-column type="selection"  :reserve-selection="true" width="50"> </el-table-column>
         <el-table-column prop="id" label="ID" width="80"></el-table-column>
-        <el-table-column prop="createTime" label="议题日期" sortable width="150"></el-table-column>
+        <el-table-column prop="createTime" label="议题日期" sortable width="185"></el-table-column>
         <el-table-column prop="title" label="议题名称" width="200"></el-table-column>
         <el-table-column prop="event" label="事件名称" width="200"></el-table-column>
         <el-table-column prop="star" label="点赞数" sortable width="100"></el-table-column>
@@ -118,8 +118,8 @@
         data() {
           return {
           	  pageInfo:{
-                page_sizes:[5,10,15,20,25,30], //每页显示多少条的用户选择数组
-                per_page:5, //每页显示几个 前端传 从用户页面获取  
+                page_sizes:[10,15,20,25,30], //每页显示多少条的用户选择数组
+                per_page:10, //每页显示几个 前端传 从用户页面获取  
                 page:1,//当前要渲染的第几页  前端传
                 
 
@@ -349,8 +349,10 @@
           //根据行业筛选
           filterBytrade(){
             console.log(this.filterForm.tradeId);
+            var startDate=this.getDate(this.filterDt[0]);
+            var endDate=this.getDate(this.filterDt[1]);
             var that=this;
-            that.$axios.get("/topics/pages?page="+that.pageInfo.page+"&per_page="+that.pageInfo.per_page+"&tradeId="+that.filterForm.tradeId)
+            that.$axios.get("/topics/pages?page="+that.pageInfo.page+"&per_page="+that.pageInfo.per_page+"&startDate="+startDate+"&endDate="+endDate+"&tradeId="+that.filterForm.tradeId)
               .then(function(res){
                 console.log(res.data);
                 that.pageInfo.total=res.data.pagination.total;
@@ -379,8 +381,10 @@
             }else{
               var src=1;
             }
+            var startDate=this.getDate(this.filterDt[0]);
+            var endDate=this.getDate(this.filterDt[1]);
             var that=this;
-            that.$axios.get("/topics/pages?page="+that.pageInfo.page+"&per_page="+that.pageInfo.per_page+"&src="+src)
+            that.$axios.get("/topics/pages?page="+that.pageInfo.page+"&per_page="+that.pageInfo.per_page+"&startDate="+startDate+"&endDate="+endDate+"&src="+src)
               .then(function(res){
                 console.log(res.data);
                 that.pageInfo.total=res.data.pagination.total;
@@ -407,13 +411,23 @@
           // },
           filterTopic(){
             console.log(this.filterForm.titleorevent);
+            if(this.filterForm.titleorevent==""){
+              alert("请选择议题名称或事件名称！");
+              return;
+            };
+            if(this.filterForm.keywords==""){
+              alert("请输入关键字！");
+              return;
+            }
             if(this.filterForm.titleorevent=="title"){
               var inx=0;
             }else{
               var inx=1;
             }
+            var startDate=this.getDate(this.filterDt[0]);
+            var endDate=this.getDate(this.filterDt[1]);
             var that=this;
-            that.$axios.get("/topics/pages?page="+that.pageInfo.page+"&per_page="+that.pageInfo.per_page+"&inx="+inx+"&search="+that.filterForm.keywords)
+            that.$axios.get("/topics/pages?page="+that.pageInfo.page+"&per_page="+that.pageInfo.per_page+"&startDate="+startDate+"&endDate="+endDate+"&inx="+inx+"&search="+that.filterForm.keywords)
               .then(function(res){
                 console.log(res.data);
                 that.pageInfo.total=res.data.pagination.total;

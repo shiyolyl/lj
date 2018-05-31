@@ -23,7 +23,7 @@
 		<div class="trade">
 			<div class="title">行业类别</div>
 			<div class="trade_item">
-				<el-button  @click="check_trade(item)"  size="mini" v-for="item in trades" :key="item.id" :class="item.visable==1?'trade_item_white':'trade_item_red'">{{item.name}}</el-button>
+				<el-button  style="margin-right:10px;" @click="check_trade(item)"  size="mini" v-for="item in trades" :key="item.id" :class="item.visable==1?'trade_item_white':'trade_item_red'">{{item.name}}</el-button>
 			</div>
 			<div class="addTrade">
 				<el-input v-model="addTradeName" auto-complete="off" style="width: 200px;" placeholder="输入新行业类别"></el-input>
@@ -142,16 +142,32 @@
 			},
 			//修改启动图片
 			uploadSplash(e){
-				var formData = new FormData(); 
+                var formData = new FormData(); 
                 console.log(e.target.files[0]);
                 var file=e.target.files[0];
                 formData.append('file', file,file.name);
                 const that=this;
-                that.$axios.put("/system/splash/"+formData)
+                that.$axios.post("/users/upload",formData)
                 .then(function(res){
                   console.log(res.data);
-                  that.splash=res.data.splash;
-                  alert("上传成功");
+                  if(res.data.resultCode==1){
+                    console.log(res.data.message);
+                    var url=res.data.message;
+                    // alert("获取url成功");
+                    console.log(url);
+                    that.$axios.put("/system/splash/?splash="+url)
+	                .then(function(res){
+	                  console.log(res.data);
+	                  that.splash=res.data[0].splash;
+	                  console.log(that.splash);
+	                  alert("上传成功");
+	                },function(err){
+	                  console.log(err);
+	                  console.log("上传失败");
+	                }).catch(function(error){
+	                  console.log(error);
+	                })
+                  }  
                 },function(err){
                   console.log(err);
                 }).catch(function(error){
@@ -299,7 +315,6 @@
 		top:0;*/
 		/*left:-28px;
 		top:-20px;*/
-
 		
 	}
 	.contact{
@@ -310,8 +325,12 @@
 		padding-top:20px;
 	}
 	.trade_item .el-button--mini{
-		width:40px;
+		width:auto;
 		border-radius: 2px;
+		margin-bottom:15px;
+	}
+	.el-button+.el-button{
+		margin-left:0;
 	}
 	.addTrade{
 		margin-top:30px;

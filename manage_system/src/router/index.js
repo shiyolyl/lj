@@ -11,12 +11,6 @@ const router = new Router({
             path: '/',
             redirect: '/login'
         },
-
-        // {
-        //     path:'/modifypw',  //修改密码
-        //     component:resolve => require(['../components/page/ModifyPassword.vue'],resolve)
-        // },
-
         {
             path: '/home', 
             // 使用meta属性来设置页面是否需要登录权限
@@ -66,84 +60,19 @@ const router = new Router({
                     path: '/systemsetting',
                     component: resolve => require(['../components/page/SystemSetting/SystemSetting.vue'], resolve)
                 },
-                {
-                    path: '/modifypw',
-                    component: resolve => require(['../components/page/ModifyPassword.vue'], resolve)
-                },
-                // {
-                //     path: '/spread',
-                //     component: resolve => require(['../components/page/SystemSetting/Spread.vue'], resolve)
-                // },
-                // {
-                //     path: '/contactservice',
-                //     component: resolve => require(['../components/page/SystemSetting/ContactService.vue'], resolve)
-                // },
-                // {
-                //     path: '/testdrag',
-                //     component: resolve => require(['../components/page/UsersManage/testdrag.vue'], resolve)
-                // },
-                // {
-                //     path: '/datasource',
-                //     component: resolve => require(['../components/page/PermissionsManage/rUserTableDataSource.vue'], resolve)
-                // },
-                // {
-                //     path: '/vuetable',
-                //     component: resolve => require(['../components/page/VueTable.vue'], resolve)     // vue-datasource组件
-                // },
-                // {
-                //     path: '/baseform',
-                //     component: resolve => require(['../components/page/BaseForm.vue'], resolve)
-                // },
-                // {
-                //     path: '/vueeditor',
-                //     component: resolve => require(['../components/page/VueEditor.vue'], resolve)    // Vue-Quill-Editor组件
-                // },
-                // {
-                //     path: '/markdown',
-                //     component: resolve => require(['../components/page/Markdown.vue'], resolve)     // Vue-Quill-Editor组件
-                // },
-                // {
-                //     path: '/upload',
-                //     component: resolve => require(['../components/page/Upload.vue'], resolve)       // Vue-Core-Image-Upload组件
-                // },
-                // {
-                //     path: '/basecharts',
-                //     component: resolve => require(['../components/page/BaseCharts.vue'], resolve)   // vue-schart组件
-                // },
-                // {
-                //     path: '/drag',
-                //     component: resolve => require(['../components/page/DragList.vue'], resolve)    // 拖拽列表组件
-                // },
-                // {
-                //     path: '/basetable',
-                //     component: resolve => require(['../components/page/TaskManage/TaskManage.vue'], resolve)    // 任务管理组件
-                // },
-                // {
-                //     path: '/baseform',
-                //     component: resolve => require(['../components/page/StockList/StockList.vue'], resolve)    // 库存查看组件
-                // },
-                // {
-                //     path: '/basecharts',
-                //     component: resolve => require(['../components/page/TaskList/TaskCheckList.vue'], resolve)    // 任务审核组件
-                // },
-                // {
-                //     path: '/drag',
-                //     component: resolve => require(['../components/page/ReportTable/ReportTable.vue'], resolve)    // 报表组件
-                // },
-                // {
-                //     path: '/manage',
-                //     component: resolve => require(['../components/page/PermissionsManage/UserList.vue'], resolve)    // 用户管理组件
-                // },
-                // {
-                //     path: '/addtask',
-                //     component: resolve => require(['../components/page/TaskManage/NewTaskPictures.vue'], resolve)    // 新建投放任务组件
-                // }
+               
+                
             ]
         },
         {
             path: '/login',
             component: resolve => require(['../components/page/Login.vue'], resolve)
-        }
+        },
+        //修改密码
+        {
+            path: '/modifypw',
+            component: resolve => require(['../components/page/ModifyPassword.vue'], resolve)
+        },
     ]
 });
 // 
@@ -154,7 +83,9 @@ router.beforeEach((to,from,next)=>{
     if(to.matched.some(r=>r.meta.requireAuth)){
         if(store.state.token){
             next();
+            // alert("有token");
         }else{
+            // alert("无token");
             next({
                 path:"/login",
                 // query:{redirect:to.fullPath}

@@ -1,6 +1,8 @@
 <template>
     <div class="login-wrap">
-        <!-- <v-head></v-head> -->
+        <div class="header">
+            <div class="logo">议题公社管理系统</div>
+        </div>
         <div class="ms-login">
             <div class="login_text">
                 <div class="username_text">用户名：</div>
@@ -13,8 +15,6 @@
                 <el-form-item prop="password">
                     <el-input v-model="loginForm.password" type="password" placeholder="请输入密码"  @keyup.enter.native="login('ruleForm')"></el-input>
                 </el-form-item>
-                
-                <!-- <p style="font-size:12px;line-height:30px;color:#999;"></p> -->
             </el-form>
             <div class="remember">
                 <input type="checkbox" name="checkbox" value="checkbox" class="select_box"><span class="remember_text">记住密码</span>
@@ -28,7 +28,6 @@
 
 <script>
     import * as types from "../../store/types";
-    import vHead from '../common/Header.vue';
     export default {
         data(){
             return {
@@ -89,14 +88,27 @@
                 that.$axios.post("/accounts/login",that.loginForm)
                 .then(function(res){
                   console.log(res.data);
-                  // that.loginForm=res.data;
-                  // console.log(that.loginForm);
                   if(res.data.code==1){
+                    alert(res.data.message);
+                    // that.$alert(res.data.message, '登录错误提示', {
+                    //     confirmButtonText: '确定',
+                    //     callback: action => {
+                    //         this.$message({
+                    //             type: 'info',
+                    //             message: `action: ${ action }`
+                    //         });
+                    //     }
+                    // });
+
+                  }else if(res.data.code==2){
                     alert(res.data.message);
                   }else{
                     window.sessionStorage.setItem("name",res.data.name);
                     window.sessionStorage.setItem("id",res.data.id);
+
+                    //将拿到的token存放到状态管理对象里面
                     that.$store.commit(types.LOGIN,res.data);
+                    // 然后跳转页面，需要做用户验证
                     that.$router.push('/home');
                   }
                 },function(err){
@@ -214,6 +226,23 @@
         height:36px;
         line-height:36px;
         margin-top:23px;
+    }
+
+
+    .header {
+        position: relative;
+        box-sizing: border-box;
+        width: 100%;
+        height: 70px;
+        font-size: 22px;
+        line-height: 70px;
+        color: #fff;
+        background-color:rgb(255, 0, 0);
+    }
+    .header .logo{
+        float: left;
+        width:250px;
+        text-align: center;
     }
 
 </style>

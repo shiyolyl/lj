@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-        <div class="logo">议题公社管理系统</div>
+        <div class="logo">议题公社后台管理系统</div>
         <div class="user-info">
             <el-dropdown trigger="click" @command="handleCommand">
                 <span class="el-dropdown-link">
@@ -32,16 +32,14 @@
         methods:{
             handleCommand(command) {
                 if(command == 'loginout'){
-                    // this.$store.commit(types.LOGOUT);
+                    this.$store.commit(types.LOGOUT);
                     this.$router.push('/login');
                 };
                 if(command=="modifyPass"){
                     this.$router.push('/modifypw');
                 }
             },
-            // handleCommand(modifyPass){
-
-            // }
+            
         }
     }
 </script>

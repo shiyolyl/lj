@@ -72,6 +72,9 @@
                             <el-table-column  label="主页截图" width="100">
                                 <template slot-scope="scope" >
                                     <span class="look_screen" @click="look_screen(scope.$index, scope.row)">查看</span>
+                                    <div class="dragDiv" @mousedown="move" v-if="showimg" :style="{backgroundImage: 'url(' + scope.row.domainThumb + ')'}">
+                                         <!-- <img src="../../../../static/img/domainthumb.png"> -->
+                                    </div>
                                 </template>
                             </el-table-column>
                             <el-table-column prop="operation" label="操作" width="140">
@@ -97,9 +100,7 @@
                             :page-sizes="pub.pageInfo.page_sizes" class="pagination">
                         </el-pagination>
                     </div>
-                    <div class="domainthumb" id="domainthumb" v-if="showimg">
-                        <img :src="domainthumbUrl" @mousedown="start" @mouseup="stop" @mousemove="move" :style="dragimg.style">
-                    </div>
+                    
                 </el-tab-pane>
 
                 <el-tab-pane label="待审核广告主" name="second">
@@ -167,8 +168,8 @@
 
               pub:{
                 pageInfo:{
-                    page_sizes:[5,10,15,20,25,30], //每页显示多少条的用户选择数组
-                    per_page:5, //每页显示几个 前端传 从用户页面获取  
+                    page_sizes:[10,15,20,25,30], //每页显示多少条的用户选择数组
+                    per_page:10, //每页显示几个 前端传 从用户页面获取  
                     page:1,//当前要渲染的第几页  前端传
                     total:1,  //总条数 后台获取
                     current_page: 1, //当前页  后台获取
@@ -180,8 +181,8 @@
               },
               adv:{
                 pageInfo:{
-                    page_sizes:[5,10,15,20,25,30], //每页显示多少条的用户选择数组
-                    per_page:5, //每页显示几个 前端传 从用户页面获取  
+                    page_sizes:[10,15,20,25,30], //每页显示多少条的用户选择数组
+                    per_page:10, //每页显示几个 前端传 从用户页面获取  
                     page:1,//当前要渲染的第几页  前端传
                     total:1,  //总条数 后台获取
                     current_page: 1, //当前页  后台获取
@@ -192,48 +193,19 @@
               },
 
               //公众号主页截图：
-              domainthumbUrl:"../../../../static/img/domainthumb.png",
+              // domainthumbUrl:"../../../../static/img/domainthumb.png",
               showimg:false,
 
-              dragimg:{
-                canDrag: false,
-                x0:0,
-                y0:0,
-                x1:0,
-                y1:0,
-                style:null
-              }
+              canDrag: false,
+              x0:0,
+              y0:0,
+              x1:0,
+              y1:0,
+              style:null,
 
+              positionX:0, 
+              positionY:0,
 
-              // tableData3: [{
-              //     id: '0001',
-              //     name: '咪蒙',
-              //     contact: '李瑞清',
-              //     mobile:'18311341134',
-              //     email:'15781919682@qq.com',
-              //     fans:'300',
-              //     lostfans:'100',
-              //     userimg:'',
-              //     price:'200',
-              //     screenshot:'2222',
-              //     operation:'',
-              //     remark:'啦啦啦',
-
-              //   }, {
-              //     id: '0001',
-              //     name: '咪蒙',
-              //     contact: '李瑞清',
-              //     mobile:'18311341134',
-              //     email:'15781919682@qq.com',
-              //     fans:'300',
-              //     lostfans:'100',
-              //     userimg:'',
-              //     price:'200',
-              //     screenshot:'2222',
-              //     operation:'',
-              //     remark:'啦啦啦',
-              //   },
-              //   ],
             }
         },
         created(){
@@ -242,10 +214,12 @@
         },
         methods:{
             look_screen(index,row){
-                console.log("点击查看了")
-                console.log(index);
+                // console.log("点击查看了");
+                // console.log(index);
                 console.log(row.domainThumb);
-                this.domainthumbUrl=row.domainThumb;
+                if(row.domainThumb){
+                    this.domainthumbUrl=row.domainThumb;
+                }
                 this.showimg=true;
             },
 
@@ -457,7 +431,7 @@
 
                 const that=this;
                 var rowData=row;
-                that.$axios.post("/users/upload",formData)
+                that.$axios.post("/users/upload?uid="+rowData.id+"&mode=1",formData)
                 .then(function(res){
                   console.log(res.data);
                   if(res.data.resultCode==1){
@@ -478,37 +452,25 @@
                
             },
 
-
-            
-
-
             //拖动图片
-            start(e){
-                //鼠标左键点击
-                if(e.button==0){
-                    this.dragimg.canDrag=true;
-                    //记录鼠标指针位置
-                    this.dragimg.x0=e.clientX;
-                    this.dragimg.y0=e.clientY;
-                }
+            move(e){ 
+                let odiv = e.target; //获取目标元素 //算出鼠标相对元素的位置 
+                let disX = e.clientX - odiv.offsetLeft; 
+                let disY = e.clientY - odiv.offsetTop; 
+                document.onmousemove = (e)=>{ 
+                    //鼠标按下并移动的事件 
+                    //用鼠标的位置减去鼠标相对元素的位置，得到元素的位置 
+                    let left = e.clientX - disX; let top = e.clientY - disY; 
+                    //绑定元素位置到positionX和positionY上面 
+                    this.positionX = top; this.positionY = left; //移动当前元素 
+                    odiv.style.left = left + 'px'; odiv.style.top = top + 'px'; 
+                }; 
+                document.onmouseup = (e) => { 
+                    document.onmousemove = null; 
+                    document.onmouseup = null; 
+                }; 
             },
-            stop(e){
-                this.dragimg.canDrag=false;
-            },
-            move(e){
-                if(this.dragimg.canDrag==true){
-                    this.dragimg.x1=e.clientX;
-                    this.dragimg.y1=e.clientX;
 
-                    let x=this.dragimg.x1-this.dragimg.x0;
-                    let y=this.dragimg.y1-this.dragimg.y0;
-
-                    let imgdiv=document.querySelector("#domainthumb");
-                    this.dragimg.style=`left:${imgdiv.offsetLeft+x}px;top:${imgdiv.offsetTop+y}px`;
-                    this.dragimg.x0=this.dragimg.x1;
-                    this.dragimg.y0=this.dragimg.y1;
-                }
-            },
         }
     }
 </script>
@@ -568,39 +530,54 @@
     .domainthumb{
         width:640px;
         height:348px;
-        /*display:none;*/
         border:1px solid #ccc;
 
         position:absolute;
-        left:0;
-        right:0;
+       /* left:0;
+        right:0;*/
         z-index:9999;
+        /*overflow: visible;*/
     }
-    body{
-        position:relative;
+
+    .dragDiv{ 
+        /*position: relative;*/
+        position:absolute;
+         /*定位*/ 
+        top: 10px; 
+        left: 10px; 
+        width: 640px; 
+        height: 348px; 
+        /*background: #666; */
+        z-index:99999;
     }
-    .domainthumb img{
+    .dragDiv img{
         width:100%;
         height:100%;
         display:block;
     }
+
+    body{
+        position:relative;
+    }
+    .domainthumb img{
+        display:block;
+        position:absolute;
+    }
     .pubcount{
         position:absolute;
-        left:145px;
+        left:130px;
+        /*left:13%;*/
         top:30px;
         z-index:9999;
     }
     .advcount{
         position:absolute;
-        left:260px;
+        left:250px;
+        /*left:25%; */
         top:30px;
         z-index:9999;
         display:block;
     }
-    /*.el-badge__content{
-        display:block;
-    }
-    */
     .editBtn{
         width:24px;
         height:14px;
@@ -635,6 +612,7 @@
         top: 0;
         opacity: 0;
     }
+
     
 </style>
 <style type="text/css">
@@ -643,6 +621,35 @@
       color:#fff;
       font-weight:normal;
     }
+
+    .el-table__body-wrapper{
+        overflow: visible;
+    }
+     .el-table{
+        overflow: visible;
+    }
+
+    .el-pager li.active{
+        background-color:rgba(255, 0, 0, 1);
+        border-color:rgba(255, 0, 0, 1);
+    }
+    .el-pager li.hover{
+        color:#fff;
+    }
+
+    .el-table .cell, .el-table__footer-wrapper, .el-table__header-wrapper{
+        overflow: visible;
+    }
+    .el-table::after, .el-table::before{
+        background-color: transparent;
+    }
+    .el-table th{
+        text-align:center;
+    }
+    .el-table--enable-row-transition .el-table__body td{
+        text-align:center;
+    }
+
 </style>
 <style type="text/css">
     .el-tabs__item.is-active{
@@ -652,9 +659,9 @@
 </style>
 <style type="text/css">
     .el-tabs__content{
-        overflow: visible;
-        
+        overflow: visible;   
     }
+   
 </style>
 <style type="text/css">
     .el-badge{
@@ -663,6 +670,11 @@
     .el-badge sup{
         display:block!important;
     }
+</style>
+<style type="text/css">
+    /* .el-table{
+        overflow: visible;
+    }*/
 </style>
 
 

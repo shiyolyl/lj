@@ -4,7 +4,7 @@
             <div class="handle-box">
                 <div>
                     <span>每页展示：</span>
-                    <el-select v-model="pageInfo.per_page" placeholder="5" class="handle-select mr10" @change="selectChange">
+                    <el-select v-model="pageInfo.per_page" placeholder="10" class="handle-select mr10" @change="selectChange">
                         <el-option v-for="(item,index) in pageInfo.page_sizes"  :key="index" :label="item" :value="item">{{item}}</el-option>
                     </el-select>
                     <span>条</span>
@@ -62,15 +62,10 @@
         data() {
           const self = this;
           return {
-          	  // total:1000,
-          	  // page_sizes:[10,15,20,25,30],
-          	  // cur_page: 1,
-          	  // select_per:10,
-             //  select_word: '',
 
             pageInfo:{
-                page_sizes:[5,10,15,20,25,30], //每页显示多少条的用户选择数组
-                per_page:5, //每页显示几个 前端传 从用户页面获取  
+                page_sizes:[10,15,20,25,30], //每页显示多少条的用户选择数组
+                per_page:10, //每页显示几个 前端传 从用户页面获取  
                 page:1,//当前要渲染的第几页  前端传
                 
 
@@ -84,29 +79,6 @@
 
           	multipleSelection: [],
 
-              // tableData3: [{
-              //     id: '0001',
-              //     topicDate: '2018.04.01',
-              //     topicName: '议题名称显示全部议题名称显示全部议题',
-              //     eventName:'事件名称显示全部事件名称显示全部',
-              //     industry:'汽车',
-              //     topicOrigin:'KOL',
-              //     creater:'公众号名称',
-              //     topicDescr:'议题说明议题说明',
-              //     operation:'',
-
-              //   }, {
-              //     id: '0001',
-              //     topicDate: '2018.04.03',
-              //     topicName: '议题名称显示全部议题名称显示全部议题',
-              //     eventName:'事件名称显示全部事件名称显示全部',
-              //     industry:'汽车',
-              //     topicOrigin:'KOL',
-              //     creater:'公众号名称',
-              //     topicDescr:'议题说明议题说明',
-              //     operation:'',
-              //   },
-              //   ],
             }
         },
         created(){
